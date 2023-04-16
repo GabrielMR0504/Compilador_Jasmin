@@ -1,22 +1,23 @@
 package compilador;
+import java.io.RandomAccessFile;
 import java.io.*;
 import java.util.*;
 
 public class Lexico {
 	public static int line = 1;
 	private char ch = ' ';
-	private FileReader file;
-	private Hashtable<String, Word> words = new Hashtable<String, Word>();
+	private RandomAccessFile file;
+	private Hashtable<String, Word> tabelaSimbulos = new Hashtable<String, Word>();
 	private String outherTokens = "";
 	private void reserveWord(Word word) {
-		words.put(word.getLexema(), word);
+		tabelaSimbulos.put(word.getLexema(), word);
 	}
 	
 	
 	
 	public Lexico(String fileName) throws FileNotFoundException{
 		try {
-			file = new FileReader(fileName);
+			file = new RandomAccessFile(fileName, "rw");
 			
 		}
 		catch(FileNotFoundException e) {
@@ -50,6 +51,8 @@ public class Lexico {
 	private boolean readNextCh(char ch) throws IOException{
 		readNextCh();
 		if(this.ch != ch) {
+			file.seek(file.getFilePointer() - 1);
+			this.ch = ch;
 			return false;
 		}
 		this.ch =' ';
@@ -57,9 +60,13 @@ public class Lexico {
 	}
 	
 	public Token scan() throws IOException{
+		if(ch == 65535) {
+			return null;
+		}
+		
 		while(true) {
 			readNextCh();
-			if(ch == ' ' || ch == '\t' || ch == '\b') {
+			if(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\b') {
 				
 			}
 			else if(ch == '\n'){
@@ -83,10 +90,6 @@ public class Lexico {
 			if (readNextCh('=')) {return Word.ge;} else {break;} 
 		case '<':
 			if (readNextCh('=')) {return Word.le;} else {break;} 
-		default:
-			if(outherTokens.contains(""+ch)) {
-				return new Token(ch);
-			}
 		}
 		
 		if(Character.isDigit(ch)) {
@@ -96,24 +99,27 @@ public class Lexico {
 				readNextCh();
 			}
 			while(Character.isDigit(ch));
+			file.seek(file.getFilePointer()-1);
 			return new Number(value);
 		}
 		
-		if(Character.isLetter(ch)) {
+		if(Character.isLetter(ch) & ch < 128) {
 			String word = "";
 			do {
 				word += ch;
 				readNextCh();
 			}
-			while(Character.isLetter(ch) || ch == '_' || Character.isDigit(ch));
-			
-			if(words.contains(word)) {return this.words.get(word);}
-			words.put(word, new Word(word, Tag.ID));
-			return words.get(word);
+			while((Character.isLetter(ch) || ch == '_' || Character.isDigit(ch))  && ch < 128);
+			file.seek(file.getFilePointer() - 1);
+			if(tabelaSimbulos.contains(word)) {return this.tabelaSimbulos.get(word);}
+			tabelaSimbulos.put(word, new Word(word, Tag.ID));
+			return tabelaSimbulos.get(word);
 		}
 		
+		if(outherTokens.contains(""+(char)ch)) {
+			return new Token((char)ch);
+		}
 		Token notSpecified = new Token(ch);
-		ch = ' ';
 		reportError(notSpecified);
 		return notSpecified;
 		
@@ -122,7 +128,7 @@ public class Lexico {
 
 
 	private void reportError(Token notSpecified) {
-		System.out.println("Lexicon Error: Token " + (char) notSpecified.tag +"does not exist, line: " + line);
+		System.out.println("\nLexicon Error: Token " + "\"" + (char) notSpecified.tag + "\"" + " does not exist, line: " + line);
 	}	
 		
 }
