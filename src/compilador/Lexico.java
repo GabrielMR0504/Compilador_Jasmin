@@ -17,12 +17,11 @@ public class Lexico {
 	
 	public Lexico(String fileName) throws FileNotFoundException{
 		try {
-			file = new RandomAccessFile(fileName, "rw");
+			file = new RandomAccessFile(fileName, "r");
 			
 		}
 		catch(FileNotFoundException e) {
 			System.out.println("Arquivo não encontrado");
-			throw e;
 		}
 		
 		outherTokens = ".;,=()!-<>+*/'{}";
@@ -60,22 +59,29 @@ public class Lexico {
 	}
 	
 	public Token scan() throws IOException{
-		if(ch == 65535) {
-			return null;
-		}
+
+
 		
 		while(true) {
+			
+			if(ch == 65535) {
+				return null;
+			}
+			
 			readNextCh();
-			if(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\b') {
-				
+			if(ch == ' ' || ch == '\r' || ch == '\t' || ch == '\b') {	
 			}
 			else if(ch == '\n'){
 				line++;
+			}
+			else if(ch == 65535) {
+				return null;
 			}
 			else {
 				break;
 			}
 		}
+		
 
 		switch(ch) {
 		case '&':
