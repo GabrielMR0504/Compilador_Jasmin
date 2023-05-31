@@ -1,4 +1,4 @@
-package compilador;
+package lexico;
 import java.io.IOException;
 import java.util.Scanner;
 

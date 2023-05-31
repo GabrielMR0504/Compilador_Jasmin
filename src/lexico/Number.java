@@ -1,4 +1,4 @@
-package compilador;
+package lexico;
 
 public class Number extends Token{
 	public final int value;

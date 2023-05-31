@@ -1,4 +1,4 @@
-package compilador;
+package lexico;
 
 public class Token {
 	public final int tag;

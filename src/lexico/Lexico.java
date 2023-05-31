@@ -1,4 +1,4 @@
-package compilador;
+package lexico;
 import java.io.RandomAccessFile;
 import java.io.*;
 import java.util.*;
@@ -117,7 +117,8 @@ public class Lexico {
 			}
 			while((Character.isLetter(ch) || ch == '_' || Character.isDigit(ch))  && ch < 128);
 			file.seek(file.getFilePointer() - 1);
-			if(tabelaSimbulos.contains(word)) {return this.tabelaSimbulos.get(word);}
+			if(tabelaSimbulos.containsKey(word)) {return this.tabelaSimbulos.get(word);}
+			
 			tabelaSimbulos.put(word, new Word(word, Tag.ID));
 			return tabelaSimbulos.get(word);
 		}

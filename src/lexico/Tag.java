@@ -1,4 +1,4 @@
-package compilador;
+package lexico;
 
 public class Tag {
 	public final static int
@@ -15,14 +15,14 @@ public class Tag {
 	ELSE	= 265,
 	REPEAT 	= 266,
 	UNTIL	= 267,
-	WHILE	= 267,
-	READ 	= 268,
-	WRITE	= 268,
+	WHILE	= 268,
+	READ 	= 269,
+	WRITE	= 270,
 
 	//Operadores e pontuacao
-	AND = 269, // &&
-	OR 	= 270, // ||
-	EQ 	= 271, // ==
+	AND = 271, // &&
+	OR 	= 272, // ||
+	EQ 	= 273, // ==
 	NE 	= 274, // !=
 	GE	= 275, // >=
 	LE	= 276, // <=

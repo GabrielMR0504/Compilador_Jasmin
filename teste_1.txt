@@ -1,4 +1,4 @@
-programa teste1
+program teste1
 
  a, b is int;
  result is int;

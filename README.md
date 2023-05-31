@@ -49,3 +49,14 @@ char_const ::= " ‘ " carac " ’ "
 literal ::= "{" caractere* "}"
 identifier ::= letter (letter | digit | " _")*
 letter ::= [A-Za-z]
+
+Comandos para rodar os testes do analizador léxico:
+
+Para executar o teste da análise léxica basta ir no terminal cmd e executar o comando,
+dentro da pasta onde estiver o arquivo:
+java -jar analizador_lexico.jar
+Lembrando que para executar essa aplicação java em sua máquina é necessário ter
+instalado o JDK. Site para instalação:
+https://www.oracle.com/br/java/technologies/downloads/#jdk20-windows
+Assim que o programa rodar, basta digitar no terminal o nome do arquivo de teste, como por
+exemplo: “teste_1.txt” e pressione enter para executar o teste.
