@@ -9,7 +9,7 @@
 ##4- Gerador de Código
 
 Gramática da Linguagem (Jasmin):
-
+```
 program ::= program identifier begin [decl-list] stmt-list end "."
 decl-list ::= decl ";" { decl ";"}
 decl ::= ident-list is type
@@ -49,7 +49,7 @@ char_const ::= " ‘ " carac " ’ "
 literal ::= "{" caractere* "}"
 identifier ::= letter (letter | digit | " _")*
 letter ::= [A-Za-z]
-
+```
 Comandos para rodar os testes do analizador léxico:
 
 Para executar o teste da análise léxica basta ir no terminal cmd e executar o comando,
