@@ -18,17 +18,18 @@ public class Tag {
 	WHILE	= 268,
 	READ 	= 269,
 	WRITE	= 270,
-
+	DO  	= 271,
 	//Operadores e pontuacao
-	AND = 271, // &&
-	OR 	= 272, // ||
-	EQ 	= 273, // ==
-	NE 	= 274, // !=
-	GE	= 275, // >=
-	LE	= 276, // <=
+	AND = 272, // &&
+	OR 	= 273, // ||
+	EQ 	= 274, // ==
+	NE 	= 275, // !=
+	GE	= 276, // >=
+	LE	= 277, // <=
 	
 	// Outros tokens
-	NUM = 277,
-	ID	= 278;
+	NUM = 278,
+	ID	= 279,
+	LITERAL = 280;
 	
 }

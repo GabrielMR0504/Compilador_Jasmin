@@ -40,6 +40,7 @@ public class Lexico {
  		reserveWord(new Word("while", Tag.WHILE));
  		reserveWord(new Word("read", Tag.READ));
  		reserveWord(new Word("write", Tag.WRITE));
+ 		reserveWord(new Word("do", Tag.DO));
  		
 	}
 
@@ -98,17 +99,76 @@ public class Lexico {
 			if (readNextCh('=')) {return Word.le;} else {break;} 
 		}
 		
+		
+		//integer_const e float_const
 		if(Character.isDigit(ch)) {
-			int value = 0;
+			String dig = "";
 			do {
-				value = 10*value + Character.digit(ch, 10);
+				dig += ch;
 				readNextCh();
 			}
 			while(Character.isDigit(ch));
+			
+			if(ch == '.') {
+				readNextCh();
+				if(Character.isDigit(ch)) {
+					dig += '.';
+					do {
+						dig += ch;
+						readNextCh();
+					}
+					while(Character.isDigit(ch));
+					file.seek(file.getFilePointer()-1);
+					tabelaSimbulos.put(dig, new Word(dig, Tag.FLOAT));
+					return tabelaSimbulos.get(dig);
+				}
+				file.seek(file.getFilePointer()-1);
+			}
 			file.seek(file.getFilePointer()-1);
-			return new Number(value);
+			tabelaSimbulos.put(dig, new Word(dig, Tag.INT));
+			return tabelaSimbulos.get(dig);
 		}
 		
+		
+		//char_const
+		if(ch == '\'') {
+			String carac= "'";
+			readNextCh();
+			if(ch < 128 && ch != '\'') {
+				carac += ch;
+				readNextCh();
+				if(ch == '\'') {
+					carac += '\'';
+					tabelaSimbulos.put(carac, new Word(carac, Tag.CHAR));
+					return tabelaSimbulos.get(carac);
+				}
+				file.seek(file.getFilePointer() - 1);
+			}
+			file.seek(file.getFilePointer() - 1);
+			
+		}
+		
+		
+		//literal
+		if(ch == '{') {
+			String literal= "{";
+			int cont = 1;
+			readNextCh();
+			while(ch < 128 && ch != '}' && ch !='\n') {
+				cont++;
+				literal += ch;
+				readNextCh();
+			}
+			if(ch == '}') {
+				literal += '}';
+				tabelaSimbulos.put(literal, new Word(literal, Tag.LITERAL));
+				return tabelaSimbulos.get(literal);
+			}
+			file.seek(file.getFilePointer() - cont);
+		}
+		
+		
+		//identifier
 		if(Character.isLetter(ch) & ch < 128) {
 			String word = "";
 			do {
@@ -126,6 +186,7 @@ public class Lexico {
 		if(outherTokens.contains(""+(char)ch)) {
 			return new Token((char)ch);
 		}
+		
 		Token notSpecified = new Token(ch);
 		reportError(notSpecified);
 		return notSpecified;
