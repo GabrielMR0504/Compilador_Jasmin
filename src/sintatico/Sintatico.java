@@ -5,10 +5,11 @@ import java.io.IOException;
 import lexico.Lexico;
 import lexico.Tag;
 import lexico.Token;
+import lexico.Word;
 
 public class Sintatico {
 
-	private Token tok = null;
+	private Word word = null;
 	private Lexico lex = null;
 	
 	public Sintatico(Lexico lexico){
@@ -23,7 +24,7 @@ public class Sintatico {
 	
 	public void advance() {
 		try {
-			tok = lex.scan();
+			word = lex.scan();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -31,17 +32,17 @@ public class Sintatico {
 	}
 	
 	public void eat(int t) {
-		if (tok.tag == t)
+		if (word.tag == t)
 			advance();
 		else
 	        error();
 	}
 	public void error() {
-		System.out.printf("Erro no token: %d", tok);
+		System.out.printf("Erro sintatico no token: %s tag: %d", word.getLexema(), word.tag);
 	}
 	
 	public void program() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.PROGRAM:
 				eat(Tag.PROGRAM);
 				eat(Tag.ID);
@@ -57,7 +58,7 @@ public class Sintatico {
 	}
 	
 	public void declList() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				declListAux();
 				break;
@@ -70,7 +71,7 @@ public class Sintatico {
 	}
 	
 	public void declListAux() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.ID:
 			decl();
 			eat(';');
@@ -84,7 +85,7 @@ public class Sintatico {
 	}
 
 	private void decl() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.ID:
 			identList();
 			eat(Tag.IS);
@@ -97,7 +98,7 @@ public class Sintatico {
 	}
 
 	private void identList() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.ID:
 			eat(Tag.ID);
 			identListAux();
@@ -108,7 +109,7 @@ public class Sintatico {
 	}
 
 	private void identListAux() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.IS:
 			break;
 		case ',':
@@ -122,7 +123,7 @@ public class Sintatico {
 	}
 	
 	private void type() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.INT:
 			eat(Tag.INT);
 			break;
@@ -138,7 +139,7 @@ public class Sintatico {
 	}
 	
 	private void stmtList() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.ID:
 			stmt();
 			stmtAux();
@@ -170,7 +171,7 @@ public class Sintatico {
 
 
 	private void stmtAux() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.END:
 
 			break;
@@ -190,7 +191,7 @@ public class Sintatico {
 	}
 	
 	private void stmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				assignStmt();
 				break;
@@ -217,7 +218,7 @@ public class Sintatico {
 	}
 
 	private void assignStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				eat(Tag.ID);
 				eat('=');
@@ -229,7 +230,7 @@ public class Sintatico {
 	}
 	
 	private void ifStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				eat(Tag.IF);
 				condition();
@@ -244,7 +245,7 @@ public class Sintatico {
 	
 
 	private void elseStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.END:
 				eat(Tag.END);
 				break;
@@ -259,7 +260,7 @@ public class Sintatico {
 	}
 
 	private void condition() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				expression();
 				break;
@@ -278,7 +279,7 @@ public class Sintatico {
 	
 
 	private void repeatStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.REPEAT:
 				eat(Tag.REPEAT);
 				stmtList();
@@ -291,7 +292,7 @@ public class Sintatico {
 	}
 	
 	private void stmtSuffix() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.UNTIL:
 				eat(Tag.UNTIL);
 				condition();
@@ -302,7 +303,7 @@ public class Sintatico {
 	}
 
 	private void whileStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.WHILE:
 				stmtPrefix();
 				stmtList();
@@ -316,7 +317,7 @@ public class Sintatico {
 	
 	
 	private void stmtPrefix() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.WHILE:
 				eat(Tag.WHILE);
 				condition();
@@ -328,7 +329,7 @@ public class Sintatico {
 	}
 	
 	private void readStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.READ:
 				eat(Tag.READ);
 				eat('(');
@@ -341,7 +342,7 @@ public class Sintatico {
 	}
 	
 	private void writeStmt() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.WRITE:
 				eat(Tag.WRITE);
 				eat('(');
@@ -354,7 +355,7 @@ public class Sintatico {
 	}
 
 	private void writable() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.LITERAL:
 				eat(Tag.LITERAL);
 				break;
@@ -369,7 +370,7 @@ public class Sintatico {
 	}
 	
 	private void expression() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 			case '!':
 			case '-':
@@ -382,7 +383,7 @@ public class Sintatico {
 	}
 
 	private void relopExpr() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.THEN:
 			case Tag.DO:
 			case ')':
@@ -403,7 +404,7 @@ public class Sintatico {
 
 
 	private void simpleExpr() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 			case '!':
 			case '-':
@@ -416,7 +417,7 @@ public class Sintatico {
 	}
 
 	private void simpleAux() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.THEN:
 			case Tag.DO:
 			case Tag.EQ:
@@ -439,7 +440,7 @@ public class Sintatico {
 	}
 
 	private void term() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 			case '!':
 			case '-':
@@ -452,7 +453,7 @@ public class Sintatico {
 	}
 
 	private void termAux() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case '-':
 			case '+':
 			case Tag.OR:
@@ -471,7 +472,7 @@ public class Sintatico {
 	}
 
 	private void factorA() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				factor();
 				break;
@@ -489,7 +490,7 @@ public class Sintatico {
 	}
 
 	private void factor() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.ID:
 				eat(Tag.ID);
 				break;
@@ -509,7 +510,7 @@ public class Sintatico {
 	}
 
 	private void relop() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case Tag.EQ:
 				eat(Tag.EQ);
 				break;
@@ -534,7 +535,7 @@ public class Sintatico {
 	}
 	
 	private void addop() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case '-':
 				eat('-');
 				break;
@@ -551,7 +552,7 @@ public class Sintatico {
 	
 
 	private void mulop() {
-		switch(tok.tag) {
+		switch(word.tag) {
 			case '*':
 				eat('*');
 				break;
@@ -567,7 +568,7 @@ public class Sintatico {
 	}
 	
 	private void constant() {
-		switch(tok.tag) {
+		switch(word.tag) {
 		case Tag.INT:
 			eat(Tag.INT);
 			break;

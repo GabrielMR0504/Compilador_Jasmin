@@ -30,6 +30,9 @@ public class Tag {
 	// Outros tokens
 	NUM = 278,
 	ID	= 279,
-	LITERAL = 280;
+	LITERAL = 280,
+	INTEGER_CONST = 281,
+	FLOAT_CONST = 282,
+	CHAR_CONST = 283;
 	
 }

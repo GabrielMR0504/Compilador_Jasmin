@@ -59,7 +59,7 @@ public class Lexico {
 		return true;
 	}
 	
-	public Token scan() throws IOException{
+	public Word scan() throws IOException{
 
 
 		
@@ -184,10 +184,10 @@ public class Lexico {
 		}
 		
 		if(outherTokens.contains(""+(char)ch)) {
-			return new Token((char)ch);
+			return new Word(ch+"", ch);
 		}
 		
-		Token notSpecified = new Token(ch);
+		Word notSpecified = new Word(ch+"", ch);
 		reportError(notSpecified);
 		return notSpecified;
 		
