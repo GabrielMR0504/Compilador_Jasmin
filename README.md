@@ -1,12 +1,12 @@
 # Compilador_Jasmin
-###Esse projeto tem como objetivo implementar em Java um compilador para a linguagem de programação Jasmin.
+### Esse projeto tem como objetivo implementar em Java um compilador para a linguagem de programação Jasmin.
 
-###A implementação foi separada em 4 partes:
+### A implementação foi separada em 4 partes:
 
-##1- Analisador Léxico e Tabela de símbolos
-##2- Analisador Sintático
-##3- Analisador Semântico
-##4- Gerador de Código
+## 1- Analisador Léxico e Tabela de símbolos
+## 2- Analisador Sintático
+## 3- Analisador Semântico
+## 4- Gerador de Código
 
 Gramática da Linguagem (Jasmin):
 ```
