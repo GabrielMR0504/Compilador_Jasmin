@@ -7,9 +7,9 @@ public class TestLexico {
 	public static void main(String[] args) throws IOException {
 		
 		try (Scanner scanner = new Scanner(System.in)) {
-			String nomeArquivo = scanner.next();
+			//String nomeArquivo = scanner.next();
 			try {
-				Lexico lexico = new Lexico(nomeArquivo);	
+				Lexico lexico = new Lexico("teste_3.txt");	
 				Token tokenAux;
 				while (true) {
 				    tokenAux = lexico.scan();
@@ -18,13 +18,13 @@ public class TestLexico {
 				    }
 				    if (tokenAux instanceof Word) {
 				        Word palavra = (Word) tokenAux;
-				        System.out.print(" "+palavra.getLexema());
+				        System.out.println(palavra.getLexema());
 				    } else if (tokenAux instanceof Number) {
 				        Number numero = (Number) tokenAux;
-				        System.out.print(" "+numero.toString());
+				        System.out.println(numero.toString());
 				    } else {
 				        char tagChar = (char) tokenAux.tag;
-				        System.out.print(" "+tagChar);
+				        System.out.println(tagChar);
 				    }
 				}
 			}

@@ -11,7 +11,6 @@ public class Sintatico {
 
 	private Word word = null;
 	private Lexico lex = null;
-	
 	public Sintatico(Lexico lexico){
 		this.lex = lexico;
 	}
@@ -19,6 +18,7 @@ public class Sintatico {
 	public void execAnalisador() {
 		advance();
 		program();
+		System.out.printf("Sucesso: Programa não contem erros sintaticos\n");
 	}
 	
 	
@@ -26,7 +26,6 @@ public class Sintatico {
 		try {
 			word = lex.scan();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -38,7 +37,8 @@ public class Sintatico {
 	        error();
 	}
 	public void error() {
-		System.out.printf("Erro sintatico no token: %s tag: %d", word.getLexema(), word.tag);
+		System.out.printf("Erro sintatico no token: \"%s\", tag: %d, linha: %d\n", word.getLexema(), word.tag, Lexico.line);
+		System.exit(0);
 	}
 	
 	public void program() {
@@ -80,7 +80,6 @@ public class Sintatico {
 		case Tag.BEGIN:
 			break;
 		default:
-			error();
 		}
 	}
 
@@ -118,7 +117,6 @@ public class Sintatico {
 			identListAux();
 			break;
 		default:
-			error();
 		}	
 	}
 	
@@ -172,22 +170,17 @@ public class Sintatico {
 
 	private void stmtAux() {
 		switch(word.tag) {
-		case Tag.END:
-
-			break;
 		case ';':
-
+			eat(';');
+			stmt();
+			stmtAux();
 			break;
+		case Tag.END:
 		case Tag.ELSE:
-
-			break;
 		case Tag.UNTIL:
-
 			break;
 		default:
-			error();
 		}
-		
 	}
 	
 	private void stmt() {
@@ -210,6 +203,8 @@ public class Sintatico {
 			case Tag.WRITE:
 				writeStmt();
 				break;
+			case Tag.END:
+				break;
 			default:
 				error();
 			}
@@ -231,7 +226,7 @@ public class Sintatico {
 	
 	private void ifStmt() {
 		switch(word.tag) {
-			case Tag.ID:
+			case Tag.IF:
 				eat(Tag.IF);
 				condition();
 				eat(Tag.THEN);
@@ -262,21 +257,18 @@ public class Sintatico {
 	private void condition() {
 		switch(word.tag) {
 			case Tag.ID:
-				expression();
-				break;
+			case '(':
 			case '!':
-				expression();
-				break;
 			case '-':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				expression();
 				break;
 			default:
 				error();
 		}
 	}
-	
-	
-	
 
 	private void repeatStmt() {
 		switch(word.tag) {
@@ -360,8 +352,12 @@ public class Sintatico {
 				eat(Tag.LITERAL);
 				break;
 			case Tag.ID:
+			case '(':
 			case '!':
 			case '-':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				simpleExpr();
 				break;
 			default:
@@ -372,8 +368,12 @@ public class Sintatico {
 	private void expression() {
 		switch(word.tag) {
 			case Tag.ID:
+			case '(':
 			case '!':
 			case '-':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				simpleExpr();
 				relopExpr();
 				break;
@@ -384,10 +384,6 @@ public class Sintatico {
 
 	private void relopExpr() {
 		switch(word.tag) {
-			case Tag.THEN:
-			case Tag.DO:
-			case ')':
-				break;
 			case Tag.EQ:
 			case '>':
 			case Tag.GE:
@@ -397,17 +393,27 @@ public class Sintatico {
 				relop();
 				simpleExpr();
 				break;
+			case ';':
+			case Tag.THEN:
+			case Tag.END:
+			case Tag.ELSE:
+			case Tag.UNTIL:
+			case Tag.DO:
+			case ')':
+				break;
 			default:
-				error();
 		}
 	}
-
 
 	private void simpleExpr() {
 		switch(word.tag) {
 			case Tag.ID:
 			case '!':
 			case '-':
+			case '(':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				term();
 				simpleAux();
 				break;
@@ -418,14 +424,12 @@ public class Sintatico {
 
 	private void simpleAux() {
 		switch(word.tag) {
+			case ';':
+			case Tag.END:
 			case Tag.THEN:
+			case Tag.UNTIL:
 			case Tag.DO:
-			case Tag.EQ:
-			case '>':
-			case Tag.GE:
-			case '<':
-			case Tag.LE:
-			case Tag.NE:
+			case '(':
 				break;
 			case '-':
 			case '+':
@@ -435,7 +439,6 @@ public class Sintatico {
 				simpleAux();
 				break;
 			default:
-				error();
 		}
 	}
 
@@ -444,6 +447,10 @@ public class Sintatico {
 			case Tag.ID:
 			case '!':
 			case '-':
+			case '(':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				factorA();
 				termAux();
 				break;
@@ -466,7 +473,6 @@ public class Sintatico {
 				termAux();
 				break;
 			default:
-				error();
 		}
 		
 	}
@@ -474,6 +480,10 @@ public class Sintatico {
 	private void factorA() {
 		switch(word.tag) {
 			case Tag.ID:
+			case '(':
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				factor();
 				break;
 			case '!':
@@ -499,9 +509,9 @@ public class Sintatico {
 				expression();
 				eat(')');
 				break;
-			case Tag.INT:
-			case Tag.FLOAT:
-			case Tag.CHAR:
+			case Tag.INTEGER_CONST:
+			case Tag.FLOAT_CONST:
+			case Tag.CHAR_CONST:
 				constant();
 				break;
 			default:
@@ -569,14 +579,14 @@ public class Sintatico {
 	
 	private void constant() {
 		switch(word.tag) {
-		case Tag.INT:
-			eat(Tag.INT);
+		case Tag.INTEGER_CONST:
+			eat(Tag.INTEGER_CONST);
 			break;
-		case Tag.FLOAT:
-			eat(Tag.FLOAT);
+		case Tag.FLOAT_CONST:
+			eat(Tag.FLOAT_CONST);
 			break;
-		case Tag.CHAR:
-			eat(Tag.CHAR);
+		case Tag.CHAR_CONST:
+			eat(Tag.CHAR_CONST);
 			break;
 		default:
 			error();

@@ -7,8 +7,9 @@ import lexico.Lexico;
 
 public class TestSintatico {
 	public static void main(String[] args) throws IOException {
-		try (Scanner scanner = new Scanner(System.in)) {
-			String nomeArquivo = scanner.next();
+		//try (Scanner scanner = new Scanner(System.in)) {
+			//String nomeArquivo = scanner.next();
+			String nomeArquivo = "teste_3.txt";	
 			try {
 				Lexico lexico = new Lexico(nomeArquivo);	
 				Sintatico sintatico = new Sintatico(lexico);
@@ -16,8 +17,8 @@ public class TestSintatico {
 				
 			}
 			catch(NullPointerException e){
-				System.out.println("Não foi possivel executar o analisador lexico");
+				System.out.println("Erro: Não foi possivel executar o analisador lexico");
 			}
 		}
-	}
+	//}
 }

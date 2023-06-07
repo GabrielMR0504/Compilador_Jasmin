@@ -44,8 +44,9 @@ public class Lexico {
  		
 	}
 
-	private void readNextCh() throws IOException{
-		ch = (char) file.read();
+	private void readNextCh() throws IOException {
+	    int nextChar = file.read();
+	    ch = (nextChar != -1) ? (char) nextChar : (char) -1;
 	}
 	
 	private boolean readNextCh(char ch) throws IOException{
@@ -78,12 +79,39 @@ public class Lexico {
 			else if(ch == 65535) {
 				return null;
 			}
+			
+
+			//comentario do codigo
+			else if (ch == 47) { 	// 47 = '/'
+				readNextCh();
+				if (ch == '*') {
+					int ch_before;
+					do {
+						ch_before = ch;
+						if (ch_before == (char) -1) {
+							break; // Sai do loop quando chegar ao final do arquivo
+						}
+						readNextCh();
+					} while (ch_before != '*' || ch != 47);
+					readNextCh();
+				}
+				else {
+					file.seek(file.getFilePointer() - 2);
+					readNextCh();
+					break;
+				}
+			}
 			else {
 				break;
 			}
+			
+			
+			
 		}
 		
+		
 
+		
 		switch(ch) {
 		case '&':
 			if (readNextCh(ch)) {return Word.and;} else {break;} 
@@ -92,11 +120,11 @@ public class Lexico {
 		case '=':
 			if (readNextCh(ch)) {return Word.eq;} else {break;} 
 		case '!':
-			if (readNextCh('=')) {return Word.ne;} else {break;} 
+			if (readNextCh(ch)) {return Word.ne;} else {break;} 
 		case '>':
-			if (readNextCh('=')) {return Word.ge;} else {break;} 
+			if (readNextCh(ch)) {return Word.ge;} else {break;} 
 		case '<':
-			if (readNextCh('=')) {return Word.le;} else {break;} 
+			if (readNextCh(ch)) {return Word.le;} else {break;} 
 		}
 		
 		
@@ -119,13 +147,13 @@ public class Lexico {
 					}
 					while(Character.isDigit(ch));
 					file.seek(file.getFilePointer()-1);
-					tabelaSimbulos.put(dig, new Word(dig, Tag.FLOAT));
+					tabelaSimbulos.put(dig, new Word(dig, Tag.FLOAT_CONST));
 					return tabelaSimbulos.get(dig);
 				}
 				file.seek(file.getFilePointer()-1);
 			}
 			file.seek(file.getFilePointer()-1);
-			tabelaSimbulos.put(dig, new Word(dig, Tag.INT));
+			tabelaSimbulos.put(dig, new Word(dig, Tag.INTEGER_CONST));
 			return tabelaSimbulos.get(dig);
 		}
 		
@@ -139,7 +167,7 @@ public class Lexico {
 				readNextCh();
 				if(ch == '\'') {
 					carac += '\'';
-					tabelaSimbulos.put(carac, new Word(carac, Tag.CHAR));
+					tabelaSimbulos.put(carac, new Word(carac, Tag.CHAR_CONST));
 					return tabelaSimbulos.get(carac);
 				}
 				file.seek(file.getFilePointer() - 1);
