@@ -1,15 +1,20 @@
-program idade begin
-  char nome = 12;
-  int idade = 45;
+program teste7
+  nome is char;
+  idade is int;
+  
+  begin
+  
+  nome = 12;
+  idade = 45;
   
   read(nome); /* le o nome da pessoa */
   
-  write(Digite a idade de  + nome +  );
+  write({Digite a idade de  + nome});
   read(idade); /* le a idade da pessoa */
   
-  if idade >= 18 then /* verifica se e maior de idade
-    write(nome +  e maior de idade.);
+  if idade >= 18 then /* verifica se e maior de idade*/
+    write({nome +  e maior de idade.});
   else
-    write(nome +  e menor de idade.);
-  
+    write({nome +  e menor de idade.});
+  end;
   end. /* finaliza o programa */

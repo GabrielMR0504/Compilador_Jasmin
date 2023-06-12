@@ -41,6 +41,7 @@ public class Lexico {
  		reserveWord(new Word("read", Tag.READ));
  		reserveWord(new Word("write", Tag.WRITE));
  		reserveWord(new Word("do", Tag.DO));
+ 		reserveWord(new Word("else", Tag.ELSE));
  		
 	}
 
@@ -50,10 +51,11 @@ public class Lexico {
 	}
 	
 	private boolean readNextCh(char ch) throws IOException{
+		char aux_c = this.ch;
 		readNextCh();
 		if(this.ch != ch) {
 			file.seek(file.getFilePointer() - 1);
-			this.ch = ch;
+			this.ch = aux_c;
 			return false;
 		}
 		this.ch =' ';
@@ -93,7 +95,7 @@ public class Lexico {
 						}
 						readNextCh();
 					} while (ch_before != '*' || ch != 47);
-					readNextCh();
+						if(ch != 65535) readNextCh();
 				}
 				else {
 					file.seek(file.getFilePointer() - 2);
@@ -120,11 +122,11 @@ public class Lexico {
 		case '=':
 			if (readNextCh(ch)) {return Word.eq;} else {break;} 
 		case '!':
-			if (readNextCh(ch)) {return Word.ne;} else {break;} 
+			if (readNextCh('=')) {return Word.ne;} else {break;} 
 		case '>':
-			if (readNextCh(ch)) {return Word.ge;} else {break;} 
+			if (readNextCh('=')) {return Word.ge;} else {break;} 
 		case '<':
-			if (readNextCh(ch)) {return Word.le;} else {break;} 
+			if (readNextCh('=')) {return Word.le;} else {break;} 
 		}
 		
 		
@@ -160,13 +162,12 @@ public class Lexico {
 		
 		//char_const
 		if(ch == '\'') {
-			String carac= "'";
+			String carac= "";
 			readNextCh();
 			if(ch < 128 && ch != '\'') {
 				carac += ch;
 				readNextCh();
 				if(ch == '\'') {
-					carac += '\'';
 					tabelaSimbulos.put(carac, new Word(carac, Tag.CHAR_CONST));
 					return tabelaSimbulos.get(carac);
 				}

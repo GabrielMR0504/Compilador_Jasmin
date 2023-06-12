@@ -9,7 +9,7 @@ public class TestLexico {
 		try (Scanner scanner = new Scanner(System.in)) {
 			//String nomeArquivo = scanner.next();
 			try {
-				Lexico lexico = new Lexico("teste_3.txt");	
+				Lexico lexico = new Lexico("teste_5.txt");	
 				Token tokenAux;
 				while (true) {
 				    tokenAux = lexico.scan();

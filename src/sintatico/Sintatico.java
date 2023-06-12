@@ -23,11 +23,15 @@ public class Sintatico {
 	
 	
 	public void advance() {
-		try {
-			word = lex.scan();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	    try {
+	        Word scannedWord = lex.scan();
+	        if (scannedWord != null) {
+	            word = scannedWord;
+	            //System.out.println(word.getLexema());
+	        }
+	    } catch (IOException e) {
+
+	    }
 	}
 	
 	public void eat(int t) {
@@ -72,114 +76,101 @@ public class Sintatico {
 	
 	public void declListAux() {
 		switch(word.tag) {
-		case Tag.ID:
-			decl();
-			eat(';');
-			declListAux();
-			break;
-		case Tag.BEGIN:
-			break;
-		default:
+			case Tag.ID:
+				decl();
+				eat(';');
+				declListAux();
+				break;
+			case Tag.BEGIN:
+				break;
+			default:
 		}
 	}
 
 	private void decl() {
 		switch(word.tag) {
-		case Tag.ID:
-			identList();
-			eat(Tag.IS);
-			type();
-			break;
-		default:
-			error();
+			case Tag.ID:
+				identList();
+				eat(Tag.IS);
+				type();
+				break;
+			default:
+				error();
 		}
 		
 	}
 
 	private void identList() {
 		switch(word.tag) {
-		case Tag.ID:
-			eat(Tag.ID);
-			identListAux();
-			break;
-		default:
-			error();
+			case Tag.ID:
+				eat(Tag.ID);
+				identListAux();
+				break;
+			default:
+				error();
 		}		
 	}
 
 	private void identListAux() {
 		switch(word.tag) {
-		case Tag.IS:
-			break;
-		case ',':
-			eat(',');
-			eat(Tag.ID);
-			identListAux();
-			break;
-		default:
+			case Tag.IS:
+				break;
+			case ',':
+				eat(',');
+				eat(Tag.ID);
+				identListAux();
+				break;
+			default:
 		}	
 	}
 	
 	private void type() {
 		switch(word.tag) {
-		case Tag.INT:
-			eat(Tag.INT);
-			break;
-		case Tag.FLOAT:
-			eat(Tag.FLOAT);
-			break;
-		case Tag.CHAR:
-			eat(Tag.CHAR);
-			break;
-		default:
-			error();
+			case Tag.INT:
+				eat(Tag.INT);
+				break;
+			case Tag.FLOAT:
+				eat(Tag.FLOAT);
+				break;
+			case Tag.CHAR:
+				eat(Tag.CHAR);
+				break;
+			default:
+				error();
 		}	
 	}
 	
 	private void stmtList() {
 		switch(word.tag) {
-		case Tag.ID:
-			stmt();
-			stmtAux();
-			break;
-		case Tag.IF:
-			stmt();
-			stmtAux();
-			break;
-		case Tag.REPEAT:
-			stmt();
-			stmtAux();
-			break;
-		case Tag.WHILE:
-			stmt();
-			stmtAux();
-			break;
-		case Tag.READ:
-			stmt();
-			stmtAux();
-			break;
-		case Tag.WRITE:
-			stmt();
-			stmtAux();
-			break;
-		default:
-			error();
+			case Tag.ID:
+			case Tag.IF:
+			case Tag.REPEAT:
+			case Tag.WHILE:
+			case Tag.READ:
+			case Tag.WRITE:
+				stmt();
+				eat(';');
+				stmtAux();
+				break;
+			default:
+				error();
 		}
 	}
 
 
 	private void stmtAux() {
 		switch(word.tag) {
-		case ';':
-			eat(';');
-			stmt();
-			stmtAux();
-			break;
-		case Tag.END:
-		case Tag.ELSE:
-		case Tag.UNTIL:
-			break;
-		default:
+			case Tag.ID:
+			case Tag.IF:
+			case Tag.REPEAT:
+			case Tag.WHILE:
+			case Tag.READ:
+			case Tag.WRITE:
+				stmt();
+				eat(';');
+				stmtAux();
+				break;
+			default:
 		}
 	}
 	
@@ -393,14 +384,6 @@ public class Sintatico {
 				relop();
 				simpleExpr();
 				break;
-			case ';':
-			case Tag.THEN:
-			case Tag.END:
-			case Tag.ELSE:
-			case Tag.UNTIL:
-			case Tag.DO:
-			case ')':
-				break;
 			default:
 		}
 	}
@@ -579,17 +562,17 @@ public class Sintatico {
 	
 	private void constant() {
 		switch(word.tag) {
-		case Tag.INTEGER_CONST:
-			eat(Tag.INTEGER_CONST);
-			break;
-		case Tag.FLOAT_CONST:
-			eat(Tag.FLOAT_CONST);
-			break;
-		case Tag.CHAR_CONST:
-			eat(Tag.CHAR_CONST);
-			break;
-		default:
-			error();
+			case Tag.INTEGER_CONST:
+				eat(Tag.INTEGER_CONST);
+				break;
+			case Tag.FLOAT_CONST:
+				eat(Tag.FLOAT_CONST);
+				break;
+			case Tag.CHAR_CONST:
+				eat(Tag.CHAR_CONST);
+				break;
+			default:
+				error();
 		}	
 	}
 }

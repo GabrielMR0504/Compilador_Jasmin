@@ -1,7 +1,7 @@
-programa teste4
-/* Teste4 do meu compilador
+program teste4
+/* Teste4 do meu compilador */
 
- pontuacao, pontuacaoMaxina, disponibilidade is inteiro;
+ pontuacao, pontuacaoMaxina, disponibilidade is int;
  pontuacaoMinima is char;
 
 begin
@@ -13,17 +13,17 @@ begin
  read(disponibilidade);
 
 
- while (pontuacao>0  (pontuacao<=pontuacaoMaxima) do
- if ((pontuacao > pontuacaoMinima) && (disponibilidade==1)) then
- write({Candidato aprovado.})
- else
- write({Candidato reprovado.})
- end
+ while (pontuacao>0  && (pontuacao<=pontuacaoMaxima)) do
+	 if ((pontuacao > pontuacaoMinima) && (disponibilidade==1)) then
+		 write({Candidato aprovado.});
+		 else
+		 write({Candidato reprovado.});
+	 end;
+	
+	 write({Pontuacao do candidato });
+	 read(pontuacao);
+	 write({Disponibilidade do candidato });
+	 read(disponibilidade);
 
- write({Pontuacao do candidato });
- read(pontuacao);
- write({Disponibilidade do candidato });
- read(disponibilidade);
-
- end
-end
+ end;
+end.

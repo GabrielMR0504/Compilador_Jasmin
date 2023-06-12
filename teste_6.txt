@@ -1,20 +1,20 @@
-programa teste6
+program teste6
 /* Teste5 elaborado por Gabriel. */
-begin;
-numInt, numint int;
-numFLoat, numfloat float;
-Letra char;
-palavra string;
+numInt, numint is int;
+numFLoat, numfloat is float;
+Letra is char;
+palavra is char;
+begin
  
 numInt = 12;
 numint = 9;
 numFloat = 2.222;
-numfloat = 2.2.00;
+numfloat = 22.00;
 
-Letra = 'a'
+Letra = 'a';
 
-Write({numInt});
-write({numint})
+write({numInt});
+write({numint});
 write({numFloat});
-write(char);;;
-end....
+write({char});
+end.
